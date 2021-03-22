@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    .wheel-bg{
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      width: 350px;
+      height: 600px;
+      background-color: yellowgreen;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      transform: translateX(-50%);
+    }
+    .wheel-box-bg{
+      width: 310px;
+      height: 310px;
+      border-radius: 50%;
+      background: linear-gradient(orange, red);
+    }
+    .wheel-bg-wrapper{
+      position: relative;
+      top: 117px;
+      left: 18px;
+      transform: rotate(22.5deg);
+    }
+    #btn{
+      position: absolute;
+      left: 50%;
+      top: 220px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #fff;
+      line-height: 60px;
+      text-align: center;
+      transform: translateX(-50%);
+    }
+    #btn:after{
+      position: absolute;
+      display: block;
+      content: '';
+      left: 10px;
+      top: -32px;
+      width: 0;
+      height: 0;
+      overflow: hidden;
+      border-width: 20px;
+      border-style: solid;
+      border-color: transparent;
+      border-bottom-color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <div class="wheel-bg">
+    <div class="wheel-bg-wrapper">
+      <canvas id="canvas"
+              width="300"
+              height="300"
+              class="wheel-box-bg"
+              :style="{
+                  transition: transition,
+                  transform: transform,
+          }"
+      >抱歉！浏览器不支持。</canvas>
+      </div>
+    <a id="btn" href="javascript:;" @click="handleStart">抽奖</a>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.12/vue.min.js"></script>
+
+<script>
+  window.addEventListener('load', function(){
+    var num = 8;   // 奖品数量
+    if (num % 2 !== 0){
+      alert('请配置偶数奖项');
+    }
+    var canvas = document.getElementById('canvas');
+    if(!canvas.getContext){
+      alert('抱歉！浏览器不支持。');
+      return;
+    }
+    // 获取绘图上下文
+    var ctx = canvas.getContext('2d');
+    for (var i = 0; i < num; i++) {
+      // 保存当前状态
+      ctx.save();
+      // 开始一条新路径
+      ctx.beginPath();
+      // 位移到圆心，下面需要围绕圆心旋转
+      ctx.translate(150, 150);
+      // 从(0, 0)坐标开始定义一条新的子路径
+      ctx.moveTo(0, 0);
+      // 旋转弧度,需将角度转换为弧度,使用 degrees * Math.PI/180 公式进行计算。
+      ctx.rotate((360 / num * i + 360 / num / 2) * Math.PI/180);
+      // 绘制圆弧
+      ctx.arc(0, 0, 150, 0,  2 * Math.PI / num, false);
+      if (i % 2 == 0) {
+        ctx.fillStyle = '#ffb820';
+      }else{
+        ctx.fillStyle = '#ffcb3f';
+      }
+      // 填充扇形
+      ctx.fill();
+      // 绘制边框
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = '#f48d24';
+      ctx.stroke();
+
+      // 文字
+      ctx.fillStyle = '#fff';
+      ctx.font="16px sans-serif";
+      ctx.fillText(i + 1, 100, 60);
+
+      // 恢复前一个状态
+      ctx.restore();
+    }
+  }, false);
+</script>
+<script>
+  new Vue({
+    el: '#app',
+    data () {
+      return {
+        level: 'five', // 奖品
+        num: 8, // 奖品数量
+        loop: 10, // 转几圈停止
+        time: 8, // 总共几秒
+        canClick: true,
+        show: false,
+        deg: 0,
+        isClearTransform: false,
+      }
+    },
+    computed: {
+      transition () {
+        return this.isClearTransform ? 'none' : `all ${this.time}s ease`;
+      },
+      transform () {
+        return `rotate(${this.deg}deg)`;
+      }
+    },
+    watch: {
+    },
+    created () {
+    },
+    mounted () {
+    },
+    methods: {
+      setAnimation () {
+        this.canClick = false
+        this.isClearTransform = false
+        setTimeout(() => {
+          this.deg = this.deg % 360
+          this.canClick = true
+          this.isClearTransform = true
+          console.log(this.level)
+        }, this.time * 1000)
+      },
+      handleStart () {
+        if (!this.canClick) return
+        const num = this.getResult(this.level)
+        this.deg = this.loop * 360 + num
+        this.setAnimation()
+      },
+      getResult (id) {
+        const everyDeg = 360 / this.num
+        const diff = 4 // 给个 4 deg 的误差 防止太接近边界
+        let obj = {
+          ten: this.random(diff, everyDeg - diff) - everyDeg * 4,
+          twenty: this.random(diff, everyDeg - diff) + everyDeg * 3,
+          fifty: this.random(diff, everyDeg - diff) + everyDeg * 2,
+          hundred: this.random(diff, everyDeg - diff) + everyDeg,
+          haier: this.random(diff, everyDeg - diff),
+          mofei: this.random(diff, everyDeg - diff) - everyDeg,
+          thanks: this.random(diff, everyDeg - diff) - everyDeg * 2,
+          five: this.random(diff, everyDeg - diff) - everyDeg * 3,
+        }
+        return obj[id]
+      },
+      random (min, max) {
+        return Math.floor(Math.random() * (max - min) + min)
+      }
+    }
+  })
+</script>
+</body>
+</html>
