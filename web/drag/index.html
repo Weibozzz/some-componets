@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    .wrapper{
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+    .limit-img{
+      width: 200px;
+      height: 220px;
+      background-color: palevioletred;
+    }
+
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="drag-comp">
+    <div
+      class="wrapper"
+      ref="voice"
+    >
+      <div class="limit-img">
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+<script>
+  new Vue({
+    el: '#app',
+    mounted () {
+      this.init()
+    },
+    methods: {
+      init () {
+        const refVoice = this.$refs.voice
+        const offsetWidth = refVoice.offsetWidth
+        const screenWidth = document.body.clientWidth
+        let maxW = screenWidth - offsetWidth
+        let maxH = window.screen.availHeight - refVoice.offsetHeight
+        let oL = 0
+        let oT = 0
+        refVoice.addEventListener('touchstart', (e) => {
+          let ev = e || window.event
+          let touch = ev.targetTouches[0]
+          oL = touch.clientX - refVoice.offsetLeft
+          oT = touch.clientY - refVoice.offsetTop
+        })
+        refVoice.addEventListener('touchmove', defaultEvent)
+        refVoice.addEventListener('touchend', () => {
+          // 吸附效果
+          // if (refVoice.offsetLeft < 15) {
+          //   refVoice.style.left = `-${offsetWidth / 2}px`
+          // }
+          // if (refVoice.offsetLeft > (screenWidth - offsetWidth - 15)) {
+          //   refVoice.style.left = `${screenWidth - offsetWidth / 2}px`
+          // }
+          document.removeEventListener('touchmove', defaultEvent)
+        })
+        function defaultEvent (e) {
+          e.preventDefault()
+          let ev = e || window.event
+          let touch = ev.targetTouches[0]
+          let oLeft = touch.clientX - oL
+          let oTop = touch.clientY - oT
+          if (oLeft < 0) {
+            oLeft = 0
+          } else if (oLeft >= maxW) {
+            oLeft = maxW
+          }
+          if (oTop < 0) {
+            oTop = 0
+          } else if (oTop >= maxH) {
+            oTop = maxH
+          }
+          refVoice.style.left = oLeft + 'px'
+          refVoice.style.top = oTop + 'px'
+        }
+      }
+    }
+  })
+</script>
+</body>
+</html>
