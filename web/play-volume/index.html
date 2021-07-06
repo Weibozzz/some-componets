@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>可点击播放在线资源</title>
+  <style>
+    .volume-icon{
+      width: 18px;
+    }
+    .volume-icon-default{
+      width: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<h1>可点击播放在线资源</h1>
+<div id="app">
+  <div class="icon">
+    <div v-if="loading">
+      loading……
+    </div>
+    <div v-else>
+      <img
+        v-if="played"
+        class="volume-icon"
+        src="./volume-active.gif"
+      >
+      <img
+        v-else
+        class="volume-icon-default"
+        src="./volume.png"
+        @click="handleRowText"
+      >
+    </div>
+  </div>
+  测试播放
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data() {
+      return {
+        audio: null,
+        loading: false,
+        played: false,
+      }
+    },
+    created () {
+    },
+    mounted () {
+    },
+    methods: {
+      handleRowText () {
+        this.playAudio()
+      },
+      playAudio () {
+        if (this.audio) {
+          this.audio.pause();
+          this.audio = null;
+        }
+        const url = "https://weibozzz.gitee.io/some-imgs/resource/tts.mp3";
+        const audio = new Audio(url);
+        this.audio = audio;
+        audio.addEventListener("canplaythrough", () => {
+          // 可播放
+          audio.play();
+         this.loading = false;
+         this.played = true;
+        });
+        audio.addEventListener("error", () => {
+          console.error("播放资源错误");
+          // 播放错误
+          this.loading = false;
+          this.played = false;
+        });
+        audio.onended = () => {
+          // 音频播放完成
+          this.loading = false;
+          this.played = false;
+        };
+      }
+    }
+  })
+</script>
+</body>
+</html>

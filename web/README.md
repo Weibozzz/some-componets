@@ -16,3 +16,8 @@ css 大转盘
 可拖拽列表，返回变化后的排序
 
 ![](./sortableDrag/sortable.png)
+## play-volume
+- [可拖拽列表](./play-volume/index.html)
+可点击播放在线资源，loading,播放动态
+
+![](./play-volume/play-tts-mp3.gif)
