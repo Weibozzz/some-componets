@@ -18,6 +18,11 @@ css 大转盘
 ![](./sortableDrag/sortable.png)
 ## play-volume
 - [可拖拽列表](./play-volume/index.html)
-可点击播放在线资源，loading,播放动态
+  可点击播放在线资源，loading,播放动态
 
 ![](./play-volume/play-tts-mp3.gif)
+## canvas-sign
+- [canvas手机端签名](./canvas-sign/index.html)
+  
+
+![](./canvas-sign/canvas.gif)

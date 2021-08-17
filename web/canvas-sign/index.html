@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>canvas签名</title>
+  <meta name="viewport"
+        content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <meta name="format-detection" content="telephone=no">
+  <style>
+    .center {
+      text-align: center;
+    }
+
+    canvas {
+      margin-left: 50px;
+      border: 1px solid;
+    }
+  </style>
+</head>
+<body>
+<h1 class="center">canvas签名</h1>
+<div class="center">请使用手机端</div>
+<canvas id="canvas" width="200px" height="100px"></canvas>
+<div>
+  <button>撤回</button>
+  <button>前进</button>
+  <button>重画</button>
+  <button>保存为图片</button>
+</div>
+<script>
+  const canvas = document.getElementById('canvas')
+  const bcr = canvas.getBoundingClientRect()
+  const t = -bcr.top
+  const l = -bcr.left
+  const buttons = document.getElementsByTagName('button')
+  const ctx = canvas.getContext('2d')
+  let arr = []
+  let pop = []
+  let i = -1
+  const fontColor = '#000'
+  function start (e) {
+    i++
+    let { clientX, clientY } = e.touches[0]
+    console.log({ clientX, clientY, l, t })
+    clientX += l
+    clientY += t
+    ctx.beginPath()
+    ctx.strokeStyle = fontColor
+    ctx.moveTo(clientX, clientY)
+    arr[i] = [[clientX, clientY]]
+  }
+  function move (e) {
+    let { clientX, clientY } = e.touches[0]
+    clientX += l
+    clientY += t
+    ctx.lineTo(clientX, clientY)
+    ctx.stroke()
+    arr[i].push([clientX, clientY])
+  }
+  canvas.ontouchstart = start
+  canvas.ontouchmove = move
+  buttons[0].onclick = function () {
+    // 撤回
+    if (!arr.length) return
+    pop.push(arr.pop())
+    drawList(arr, '#fff')
+    i--
+  }
+  buttons[1].onclick = function () {
+    // 前进
+    if (!pop.length) return
+    const data = pop.pop()
+    arr.push(data)
+    draw(data)
+    i++
+  }
+  buttons[2].onclick = function () {
+    // 重画
+    arr = []
+    pop = []
+    i = -1
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+  }
+  buttons[3].onclick = function () {
+    // save
+    const dataURL = canvas.toDataURL()
+    const a = document.createElement('a')
+    a.href = dataURL
+    a.download = 'save'
+    a.click()
+  }
+  function draw (item, color = fontColor) {
+    item.forEach((line, index) => {
+      const [x, y] = line
+      if (index === 0) {
+        ctx.beginPath()
+        ctx.strokeStyle = color
+        ctx.moveTo(x, y)
+      }
+      ctx.lineTo(x, y)
+      ctx.stroke()
+    })
+  }
+  function drawList (arr, color = fontColor) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    arr.forEach((item) => {
+      draw (item, color = fontColor)
+    })
+  }
+</script>
+</body>
+</html>
