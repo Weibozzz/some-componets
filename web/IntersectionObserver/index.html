@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IntersectionObserver Api</title>
+  <style>
+    .empty {
+      height: 900px;
+      line-height: 900px;
+      text-align: center;
+      background: lightblue;
+    }
+
+    .lazy-loaded {
+      min-height: 300px;
+    }
+
+    .lazy-loaded:nth-child(odd) {
+      background: lightcoral;
+    }
+
+    .lazy-loaded:nth-child(even) {
+      background: lightblue;
+    }
+
+    .cont {
+      height: 600px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<h1>IntersectionObserver API 懒加载示例</h1>
+<h4>缓慢滚动条</h4>
+<div class="empty">占位</div>
+<ul>
+  <li class="lazy-loaded">
+    <div class="cont">往下滚动注意看滚动条的变化</div>
+  </li>
+  <li class="lazy-loaded">
+    <div class="cont">往下滚动注意看滚动条的变化</div>
+  </li>
+  <li class="lazy-loaded">
+    <div class="cont">往下滚动注意看滚动条的变化</div>
+  </li>
+  <li class="lazy-loaded">
+    <div class="cont">往下滚动注意看滚动条的变化</div>
+  </li>
+  <li class="lazy-loaded">
+    <div class="cont">往下滚动注意看滚动条的变化</div>
+  </li>
+</ul>
+<script>
+  function query (selector) {
+    return Array.from(document.querySelectorAll(selector))
+  }
+  var observer = new IntersectionObserver(
+    function (changes) {
+      changes.forEach(function (change) {
+        console.log(change.intersectionRatio)
+        var container = change.target
+        if (change.intersectionRatio > 0) {
+          container.querySelector('.cont').style.display = 'block'
+          observer.unobserve(container)
+        }
+      })
+    }
+  )
+  query('.lazy-loaded')
+    .forEach(function (item) {
+      observer.observe(item)
+    })
+</script>
+</body>
+</html>

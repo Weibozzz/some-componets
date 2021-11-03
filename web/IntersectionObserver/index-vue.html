@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IntersectionObserver Api Vue</title>
+  <style>
+    .empty {
+      height: 900px;
+      line-height: 900px;
+      text-align: center;
+      background: lightblue;
+    }
+
+    .lazy-loaded {
+      min-height: 300px;
+    }
+
+    .scrollLazy:nth-child(odd) {
+      background: lightcoral;
+    }
+
+    .scrollLazy:nth-child(even) {
+      background: lightblue;
+    }
+
+    .cont {
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+<div class="empty">占位</div>
+<div id="app">
+  <div>
+    <lazy-comp
+      v-for="(item, index) in arr"
+      :key="index"
+    >
+      <todo-item />
+    </lazy-comp>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script>
+  Vue.component('lazy-comp', {
+    data: function () {
+      return {
+        io: null,
+        isShowSlot: false,
+        data: 123,
+      }
+    },
+    template: `
+    <div
+        ref="scrollLazy"
+        class="scrollLazy"
+        style="min-height: 200px"
+    >
+      <slot v-if="isShowSlot"></slot>
+    </div>
+    `,
+    mounted(){
+      const scrollLazy = this.$refs.scrollLazy
+      this.io = new IntersectionObserver((entries) => {
+        // 表示当前div进入到滚动区域，此时加载组件
+        // console.log('wrapRatio->', entries[0].intersectionRatio);
+        if (entries[0].isIntersecting) {
+          this.isShowSlot = true
+          this.io.unobserve(scrollLazy)
+        }
+      })
+      this.io.observe(scrollLazy)
+    },
+    beforeDestroy(){
+      this.io.disconnect()
+    }
+  })
+  Vue.component('todo-div', {
+    template: `
+    <div class="cont">往下滚动注意看滚动条的变化</div>
+    `,
+    mounted(){
+    }
+  })
+
+  Vue.component('todo-item', {
+    template: `
+    <div class="lazy-loaded">
+      <todo-div />
+    </div>
+    `,
+    mounted(){
+    }
+  })
+  var app = new Vue({
+    el: '#app',
+    data: {
+      arr: [...Array(5)]
+    },
+    mounted() {
+
+    }
+  })
+</script>
+</body>
+</html>

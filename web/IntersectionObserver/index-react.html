@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IntersectionObserver Api React</title>
+  <style>
+    .empty {
+      height: 900px;
+      line-height: 900px;
+      text-align: center;
+      background: lightblue;
+    }
+
+    .lazy-loaded {
+      min-height: 300px;
+    }
+
+    .scrollLazy:nth-child(odd) {
+      background: lightcoral;
+    }
+
+    .scrollLazy:nth-child(even) {
+      background: lightblue;
+    }
+
+    .cont {
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<!-- 加载我们的 React 组件。-->
+<script type="text/babel">
+  const e = React.createElement
+  function ButtonComp () {
+    const { useState } = React
+    const [count, setCount] = useState(0)
+    return (
+      <div>
+        <div className="cont">往下滚动注意看滚动条的变化</div>
+      </div>
+    )
+  }
+  function Container () {
+    return (
+      <div>
+        <h1>IntersectionObserver API 懒加载 React 组件示例</h1>
+        <h4>缓慢滚动条</h4>
+        <div className="empty">占位</div>
+        <ul>
+          {
+            [...Array(5)].map((v, i) => {
+              return (
+                <LazyComp
+                  key={i}>
+                  <li
+                    className="lazy-loaded"
+                  >
+                    <ButtonComp />
+                  </li>
+                </LazyComp>
+              )
+            })
+          }
+        </ul>
+      </div>
+    )
+  }
+  function LazyComp (props) {
+    const { useState, useEffect, useRef } = React
+    const [startLoad, setStartLoad] = useState(false)
+    const wrap = useRef(null)
+    useEffect(() => {
+      let io
+      if (props.noScroll) {
+        io = new IntersectionObserver((entries) => {
+          // 表示当前div进入到滚动区域，此时加载组件
+          // console.log('wrapRatio->', entries[0].intersectionRatio);
+          if (entries[0].isIntersecting) {
+            setStartLoad(true)
+            io.unobserve(wrap.current)
+          }
+        })
+        io.observe(wrap.current)
+      } else {
+        const scrollFun = () => {
+          io = new IntersectionObserver((entries) => {
+            // 表示当前div进入到滚动区域，此时加载组件
+            if (entries[0].intersectionRatio > 0) {
+              setStartLoad(true)
+              io.unobserve(wrap.current)
+            }
+          })
+          io.observe(wrap.current)
+          // window.removeEventListener('scroll', scrollFun)
+        }
+        scrollFun()
+        // window.addEventListener('scroll', scrollFun)
+      }
+      return () => {
+        // todo
+        io === null || io === void 0 ? void 0 : io.disconnect()
+      }
+    }, [])
+    return (React.createElement('div', {
+      className: 'scrollLazy', ref: wrap, style: {
+        minHeight: typeof props.height === 'number' ? props.height : 200
+      }
+    }, startLoad && props.children))
+  }
+  class App extends React.Component {
+    constructor (props) {
+      super(props)
+    }
+    render () {
+      return (
+        <Container />
+      )
+    }
+  }
+  const domContainer = document.querySelector('#app')
+  ReactDOM.render(e(App), domContainer)
+</script>
+</body>
+</html>

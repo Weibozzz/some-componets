@@ -23,6 +23,17 @@ css 大转盘
 ![](./play-volume/play-tts-mp3.gif)
 ## canvas-sign
 - [canvas手机端签名](./canvas-sign/index.html)
-  
+
 
 ![](./canvas-sign/canvas.gif)
+
+## IntersectionObserver
+> 原生，可根据可见区域隐藏隐藏 dom。vue 和 react 可以封装组件，懒加载组件
+
+- [原生示例](./IntersectionObserver/index.html)
+- [vue示例](./IntersectionObserver/index-vue.html)
+- [react示例](./IntersectionObserver/index-react.html)
+
+- [文档介绍](https://weibozzz.github.io/JS/Api/IntersectionObserver.html)
+
+![](./IntersectionObserver/observer.gif)
