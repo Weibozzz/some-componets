@@ -30,6 +30,8 @@ css 大转盘
 ## IntersectionObserver
 > 原生，可根据可见区域隐藏隐藏 dom。vue 和 react 可以封装组件，懒加载组件
 
+`react` 示例 具有 `css` 动态效果
+
 - [原生示例](./IntersectionObserver/index.html)
 - [vue示例](./IntersectionObserver/index-vue.html)
 - [react示例](./IntersectionObserver/index-react.html)

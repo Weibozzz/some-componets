@@ -12,14 +12,20 @@
     }
 
     .lazy-loaded {
-      min-height: 300px;
+      transition: all linear 1000ms;
+      transform: translateY(100px);
+      opacity: 0;
+    }
+    .animation-show{
+      transform: translateY(0px);
+      opacity: 1;
     }
 
-    .scrollLazy:nth-child(odd) {
+    .scrollLazy:nth-child(odd) .cont {
       background: lightcoral;
     }
 
-    .scrollLazy:nth-child(even) {
+    .scrollLazy:nth-child(even) .cont {
       background: lightblue;
     }
 
@@ -36,6 +42,23 @@
 <!-- 加载我们的 React 组件。-->
 <script type="text/babel">
   const e = React.createElement
+  const animation = () => {
+    // 需要滚动动画的类
+    const dom = document.getElementsByClassName('animation-init');
+    // 屏幕可视高度
+    const clientHeight = document.documentElement.clientHeight;
+    for (let index = 0; index < dom.length; index++) {
+      const element = dom[index];
+      if (element.getBoundingClientRect().top - clientHeight <= -200) {
+        const show = element.getAttribute('animation-show');
+        if (!show) {
+          element.setAttribute('animation-show', 'true');
+          element.classList.add('animation-show');
+          element.classList.remove('animation-init');
+        }
+      }
+    }
+  };
   function ButtonComp () {
     const { useState } = React
     const [count, setCount] = useState(0)
@@ -46,6 +69,16 @@
     )
   }
   function Container () {
+    const { useEffect } = React
+    useEffect(() => {
+      const scrollHandler = () => {
+        animation()
+      }
+      window.addEventListener('scroll', scrollHandler)
+      return () => {
+        window.removeEventListener('scroll', scrollHandler);
+      };
+    }, [])
     return (
       <div>
         <h1>IntersectionObserver API 懒加载 React 组件示例</h1>
@@ -58,7 +91,7 @@
                 <LazyComp
                   key={i}>
                   <li
-                    className="lazy-loaded"
+                    className="lazy-loaded animation-init"
                   >
                     <ButtonComp />
                   </li>
