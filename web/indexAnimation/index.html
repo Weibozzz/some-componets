@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>indexAnimation</title>
+
+  <!--  动画-->
+  <style>
+    /*右侧进入动画*/
+    @keyframes animationRightIn {
+      from {
+        opacity: 0;
+        transform: translate3d(90px, 0, 0);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    /*右侧离开动画*/
+    @keyframes animationRightOut {
+      from {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+      to {
+        opacity: 0;
+        transform: translate3d(-90px, 0, 0);
+      }
+    }
+
+    /*漂浮球从中心扩散到边界*/
+    @keyframes animationCenterToOut {
+      from {
+        transform: translate(0, 0);
+      }
+      to {
+        transform: translate(-210px, 100px);
+      }
+    }
+
+    @keyframes animationCenterToOut2 {
+      from {
+        transform: translate(0, 0);
+      }
+      to {
+        transform: translate(210px, -100px);
+      }
+    }
+
+    @keyframes animationCenterToOut3 {
+      from {
+        transform: translate(0, 0);
+      }
+      to {
+        transform: translate(-210px, -100px);
+      }
+    }
+
+    @keyframes animationCenterToOut4 {
+      from {
+        transform: translate(0, 0);
+      }
+      to {
+        transform: translate(210px, 100px);
+      }
+    }
+
+    /*漂浮球上下跳动*/
+    @keyframes jump {
+      0% {
+        transform: translate(-210px, 100px);
+      }
+      50% {
+        transform: translate(-210px, 70px);
+      }
+
+      100% {
+        transform: translate(-210px, 100px);
+      }
+    }
+
+    @keyframes jump2 {
+      0% {
+        transform: translate(210px, -100px);
+      }
+      50% {
+        transform: translate(210px, -70px);
+      }
+
+      100% {
+        transform: translate(210px, -100px);
+      }
+    }
+
+    @keyframes jump3 {
+      0% {
+        transform: translate(-210px, -100px);
+      }
+      50% {
+        transform: translate(-210px, -70px);
+      }
+
+      100% {
+        transform: translate(-210px, -100px);
+      }
+    }
+
+    @keyframes jump4 {
+      0% {
+        transform: translate(210px, 100px);
+      }
+      50% {
+        transform: translate(210px, 70px);
+      }
+
+      100% {
+        transform: translate(210px, 100px);
+      }
+    }
+
+    /*点击icon放大动效*/
+    @keyframes scaleSize {
+      0% {
+        transform: scale(1);
+      }
+      25% {
+        transform: scale(1.15);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+  <!--  去除自带样式-->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+  <!--  公共样式-->
+  <style>
+    section {
+      position: absolute;
+      left: 50%;
+      display: flex;
+      width: 800px;
+      padding: 30px 50px;
+      margin: 50px auto;
+      border: 1px solid #666666;
+      transform: translateX(-50%);
+      transition: all 0.5s ease;
+      opacity: 0;
+      z-index: 0;
+    }
+
+    .leftContent {
+      position: relative;
+      animation: animationRightOut 0.5s forwards;
+    }
+
+    .leftContent .img {
+      width: 400px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .float-icon {
+      position: absolute;
+      top: 175px;
+      left: 175px;
+      width: 50px;
+      z-index: 0;
+    }
+
+    .float-icon.float-icon1.icon1 {
+      animation: animationCenterToOut 0.9s ease forwards, jump 3s ease 1s infinite;
+    }
+
+    .float-icon.float-icon1.icon2 {
+      animation: animationCenterToOut2 0.9s ease forwards, jump2 3s ease 1s infinite;
+    }
+
+    .float-icon.float-icon2.icon1 {
+      animation: animationCenterToOut3 0.9s ease forwards, jump3 3s ease 1s infinite;
+    }
+
+    .float-icon.float-icon2.icon2 {
+      animation: animationCenterToOut4 0.9s ease forwards, jump4 3s ease 1s infinite;
+    }
+
+    .rightContent {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin-left: 100px;
+    }
+
+    .rightContent > div:not(.tabs) {
+      animation: animationRightOut 0.5s forwards;
+    }
+
+    .title {
+      font-size: 40px;
+      font-weight: bold;
+      transition-delay: 0s;
+    }
+
+    .desc {
+      font-size: 16px;
+      color: #464854;
+      margin: 15px 0 20px;
+      transition-delay: 0.3s;
+    }
+
+    .enterBtn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100px;
+      height: 30px;
+      border-radius: 20px;
+      border: 1px solid #666666;
+      cursor: pointer;
+      transition-delay: 0.6s;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 30px;
+    }
+
+    .tabs .tab.current {
+      background: beige;
+    }
+
+    .tabs > div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      margin-right: 20px;
+      border-radius: 30px;
+      border: 1px solid #666666;
+      cursor: pointer;
+    }
+  </style>
+  <!--  当前样式-->
+  <style>
+    .tabs > div.current {
+      animation: scaleSize .5s forwards;
+    }
+
+    section.current {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    section.current .leftContent {
+      opacity: 0;
+      animation: animationRightIn 0.5s ease 0.3s forwards;
+    }
+
+    section.current .rightContent > div:not(.tabs) {
+      opacity: 0;
+      animation: animationRightIn 0.5s ease 0.3s forwards;
+    }
+
+    section.current .title {
+      transition-delay: 0.06s;
+    }
+
+    section.current .desc {
+      transition-delay: 0.03s;
+    }
+
+    section.current .enterBtn {
+      transition-delay: 0s;
+    }
+  </style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<!-- 加载我们的 React 组件。-->
+<script type="text/babel">
+  const e = React.createElement
+  const useState = React.useState
+  const domContainer = document.querySelector('#app')
+  const contentArr = [
+    {
+      title: '全会精神',
+      desc: '团市委书记徐强表示,市委十二届十三次全会是一次承上启下的重要会议。',
+      img: './images/person.png',
+      icons: ['./images/heart.png', './images/tree.png'],
+      url: 'https://mi.com'
+    },
+    {
+      title: '精神纪实',
+      desc: '走进济钢集团，黑色钢铁已不见踪影。36岁的技术人员陈书超身着白大褂。',
+      img: './images/person.png',
+      icons: ['./images/ball.png', './images/sweet.png'],
+      url: 'https://baidu.com'
+    }
+  ]
+  function App () {
+    const [current, setCurrent] = useState(0)
+    return (
+      <div>
+        {
+          contentArr.map((item, index) => {
+            return (
+              <section
+                className={
+                  `${index === current ? 'current' : ''}`
+                }
+                key={index}>
+                <div className="leftContent">
+                  {
+                    index === current ? item.icons.map((icon, iconIndex) => (
+                      <img
+                        key={iconIndex}
+                        className={
+                          `float-icon float-icon${index + 1} icon${iconIndex + 1}`
+                        }
+                        src={icon}
+                      />
+                    )) : null
+                  }
+                  <img className="img" src={item.img} />
+                </div>
+                <div className="rightContent">
+                  <div className="title">{item.title}</div>
+                  <div className="desc">{item.desc}</div>
+                  <div className="tabs">
+                    {
+                      contentArr.map((tab, tabIndex) => {
+                        return (
+                          <div
+                            key={tabIndex}
+                            className={
+                              `tab ${tabIndex === current ? 'current' : ''}`
+                            }
+                            onClick={() => {
+                              setCurrent(tabIndex)
+                            }}>
+                            {tabIndex + 1}
+                          </div>
+                        )
+                      })
+                    }
+                  </div>
+                  <div className="enterBtn">
+                    <div
+                      onClick={() => {
+                        location.href = item.url
+                      }}>进入游戏
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )
+          })
+        }
+      </div>
+    )
+  }
+  ReactDOM.render(e(App), domContainer)
+</script>
+</body>
+</html>
