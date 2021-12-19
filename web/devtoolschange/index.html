@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>devtoolschange</title>->
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+  import devtools from './index.js'
+  // Check if it's open
+  console.log('Is DevTools open:', devtools.isOpen)
+  isOpen(devtools.isOpen)
+  // Check it's orientation, `undefined` if not open
+  console.log('DevTools orientation:', devtools.orientation)
+  // Get notified when it's opened/closed or orientation changes
+  window.addEventListener('devtoolschange', event => {
+    console.log('Is DevTools open:', event.detail.isOpen)
+    isOpen(event.detail.isOpen)
+    console.log('DevTools orientation:', event.detail.orientation)
+  })
+  function isOpen (isOpen = false) {
+    if (isOpen) {
+      function block () {
+        setInterval(() => {
+          Function('debugger')()
+        }, 50)
+      }
+      try {
+        block()
+      } catch (err) {
+      }
+    }
+  }
+
+</script>
+</body>
+</html>

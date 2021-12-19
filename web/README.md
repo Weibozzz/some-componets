@@ -46,3 +46,9 @@ css 大转盘
 - [示例](./indexAnimation/index.html)
 
 ![](./indexAnimation/ani.gif)
+## devtoolschange
+> 专门用来检测开发者工具有没有被打开 f12，支持Chrome， Firefox，Safari ，Firebug。
+
+- [devtools-detect](https://github.com/sindresorhus/devtools-detect)
+
+- [示例:打开开发者工具就debugger](./devtoolschange/index.html)
