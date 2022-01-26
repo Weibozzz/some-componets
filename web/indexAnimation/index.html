@@ -17,6 +17,47 @@
         transform: translate3d(0, 0, 0);
       }
     }
+    @keyframes animationLeftTitleIn {
+      from {
+        opacity: 0;
+        transform-origin: top;
+        transform: rotateY(-50deg);
+      }
+      to {
+        opacity: 1;
+        transform-origin: top;
+        transform: rotateY(0deg);
+      }
+    }
+    @keyframes animationLeftTitleOut {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+
+    @keyframes animationRightTitleIn {
+      from {
+        opacity: 0;
+        transform: translate3d(90px, 0, 0);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+    @keyframes animationRightTitleOut {
+      from {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+      to {
+        opacity: 0;
+        transform: translate3d(-90px, 0, 0);
+      }
+    }
 
     /*右侧离开动画*/
     @keyframes animationRightOut {
@@ -157,10 +198,14 @@
       z-index: 0;
     }
 
-    .leftContent {
+    .leftContent .leftContent-img {
       position: relative;
-      animation: animationRightOut 0.5s forwards;
+      animation: animationRightOut 0.3s forwards;
     }
+    .leftContent .img-title {
+       position: relative;
+       animation: animationLeftTitleOut 0.3s ease forwards;
+     }
 
     .leftContent .img {
       width: 400px;
@@ -206,14 +251,12 @@
     .title {
       font-size: 40px;
       font-weight: bold;
-      transition-delay: 0s;
     }
 
     .desc {
       font-size: 16px;
       color: #464854;
       margin: 15px 0 20px;
-      transition-delay: 0.3s;
     }
 
     .enterBtn {
@@ -225,7 +268,6 @@
       border-radius: 20px;
       border: 1px solid #666666;
       cursor: pointer;
-      transition-delay: 0.6s;
     }
 
     .tabs {
@@ -260,9 +302,13 @@
       z-index: 1;
     }
 
-    section.current .leftContent {
+    section.current  .img-title {
+      position: relative;
+      animation: animationLeftTitleIn 0.3s ease .3s forwards;
+    }
+    section.current .leftContent-img {
       opacity: 0;
-      animation: animationRightIn 0.5s ease 0.3s forwards;
+      animation: animationRightIn 0.3s ease 0.3s forwards;
     }
 
     section.current .rightContent > div:not(.tabs) {
@@ -271,15 +317,20 @@
     }
 
     section.current .title {
-      transition-delay: 0.06s;
+      animation: animationRightTitleIn 0.5s ease 0.08s forwards !important;
     }
 
-    section.current .desc {
-      transition-delay: 0.03s;
+    section.current .rightContent .desc {
+      animation: animationRightTitleIn 0.5s ease 0.04s forwards !important;
     }
 
     section.current .enterBtn {
-      transition-delay: 0s;
+      animation: animationRightTitleIn 0.5s ease 0s forwards !important;
+    }
+    .img-title{
+      opacity: 0;
+      text-align: center;
+      font-size: 40px;
     }
   </style>
 </head>
@@ -334,7 +385,8 @@
                       />
                     )) : null
                   }
-                  <img className="img" src={item.img} />
+                  <div className="img-title">{item.title}</div>
+                  <img className="img leftContent-img" src={item.img} />
                 </div>
                 <div className="rightContent">
                   <div className="title">{item.title}</div>
