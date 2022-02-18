@@ -3,10 +3,10 @@ node_modules/
 npm-debug.log
 /www
 /build
+package-lock.json
 
 # cordova stuff
 /platforms
-/plugins
 
 test/unit/coverage
 test/e2e/reports
