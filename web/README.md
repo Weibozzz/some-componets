@@ -1,8 +1,10 @@
 web常用的组件库
 
 ## drag
-- [可滑动组件](./drag/index.html)
-可滑动组件
+- [h5-可滑动组件](./drag/index.html)
+  可滑动组件
+- [web-可拖拽组件](./drag/dragMove.html)
+  可滑动组件
 
 ![](./drag/drag.png)
 
