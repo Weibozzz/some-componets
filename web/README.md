@@ -61,3 +61,5 @@ css 大转盘
 - 使用库 better-scroll lyric-parser
 
 - [示例](./lyric-scroll/index.html)
+  
+  ![](./lyric-scroll/lyric.gif)
