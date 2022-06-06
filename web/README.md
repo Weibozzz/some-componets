@@ -62,4 +62,4 @@ css 大转盘
 
 - [示例](./lyric-scroll/index.html)
   
-  ![](./lyric-scroll/lyric.gif)
+  ![](./lyric-scroll/lyric-animation.gif)
