@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+</head>
+
+<style>
+  p{
+    margin: 0;
+    padding: 0;
+  }
+  .wrapper{
+    height: 600px;
+    overflow-y: hidden;
+  }
+  .active {
+    color: red;
+  }
+  .lyric {
+    position: relative;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  li{
+  }
+  p{
+    text-align: left;
+  }
+</style>
+<body>
+<h1>打开手机模式查看</h1>
+<div id="app">
+  <div>
+    <button @click="togglePlay">toggle-play</button>
+    <button @click="play">play</button>
+    <button @click="stop">stop</button>
+    <div class="seek">
+      <input
+        type="text"
+        placeholder="Please input the seconds"
+        v-model="seekTime" />
+      <button @click="seek">seek</button>
+    </div>
+    <div class="wrapper">
+      {{curNum}}
+      <ul class="content">
+        <li
+          v-for="(line, index) in lyric && lyric.lines"
+          class="lyric"
+          :class="{ active: curNum === index }"
+          :style="{height: height + 'px'}"
+        >
+          <p class="seconds">{{ line.time / 1000 }}s -- {{ line.txt }}</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+</body>
+<script src="../assets/js/vue.js"></script>
+<script src="https://unpkg.com/@better-scroll/core@latest/dist/core.min.js"></script>
+<script src="lyricParser.js"></script>
+<script>
+  function padStart(n) {
+    return String(n).padStart(2, '0');
+  }
+  function createLyric(){
+    let str = '';
+    for (let i = 0; i < 60; i++) {
+      if(i%1===0){
+        str += `
+    [00:${padStart(i)}.00]${padStart(i)}你看我虚荣模样 你该怎么补偿
+    `
+      }
+    }
+    return str;
+  }
+  var lyric =  `
+[ti:高尚]
+[ar:薛之谦]
+[al:高尚]
+[by:]
+[offset:0]
+${createLyric()}
+[01:07.40]我多高尚 向自尊开了枪
+[01:16.00]
+[01:17.26]你同情的眼光 我特别的欣赏
+[01:22.49]
+[01:23.15]哀而不伤
+[01:26.42]
+[01:27.17]我多慌张 怕人闯入我围墙
+[01:35.62]
+[01:36.88]窥探五官不详 见我原本模样
+[01:42.01]
+[01:42.53]还能 模仿 任何形状
+[01:49.15]
+[02:00.55]越恶劣的情况 越要想象
+[02:07.31]
+[02:10.24]狼藏起反犬旁 像从了良
+[02:17.47]
+[02:20.72]张牙舞爪 的人在散谎
+[02:27.20]
+[02:29.92]愿形容我的词 别太荒唐
+[02:36.26]
+[02:40.88]贪念表现恰当 就像索要嫁妆
+[02:45.90]在情理上
+[02:48.80]
+[02:49.79]请当我孤芳自赏 还规矩条条框框
+[02:57.32]
+[02:59.28]我多高尚 向自尊开了枪
+[03:07.35]
+[03:08.86]你异样的眼光 我特别的欣赏
+[03:14.08]
+[03:14.71]让人难忘
+[03:18.63]我多风光 你别闯入我围墙
+[03:27.12]
+[03:28.33]你要什么真相 不就图个皮囊
+[03:33.42]
+[03:34.07]不如 让我 留在橱窗
+[03:40.09]
+[03:52.49]我多难忘 像秀色可餐的模样
+[04:00.91]
+[04:01.97]感谢你又打赏 你用词越恰当
+[04:07.87]我越膨胀
+[04:11.44]
+[04:11.99]我的疯狂 连我自己都看不上
+[04:20.44]
+[04:21.35]阴里怪气的愿望 那屈辱的轻伤
+[04:27.15]谁能给我 发个奖章
+[04:34.85]
+[04:43.45]我多向往 有个美丽的地方
+[04:52.21]
+[04:53.41]我最初的模样 没痛也不会痒
+[04:59.88]
+[05:00.96]能把赏赐 都烧光
+[05:10.86]制作人：周以力
+[05:11.93]编曲：周以力
+[05:12.73]大提琴：郎莹
+[05:13.53]鼓：尹森
+[05:14.43]贝斯：陈然然
+[05:14.63]吉他：张凇
+[05:14.80]Vocal录音室：江苏广电总台录音室
+[05:15.26]乐器录音室：北京录顶技录音室
+[05:15.72]乐器录音师：王晓海/鲍锐（鼓）
+[05:16.22]混音工程师：鲍锐@录顶技Studio
+[05:16.65]母带工程师：Friedemann Tishmeyer@Hambug Studio
+`
+</script>
+<script>
+  new Vue({
+    el: '#app',
+    data () {
+      return {
+        seekTime: 0,
+        curNum: 0,
+        lyric: new Lyric(lyric, this.handleLyric),
+        height: 35,
+        bs: null,
+        timer: null,
+        isScroll: true,
+      };
+    },
+    mounted(){
+      this.bs = new BScroll('.wrapper', {
+        probeType: 1,
+        momentumLimitTime: 100,
+      })
+      this.play()
+      this.bs.on('scroll', (position) => {
+        this.isScroll = false
+        this.timer && clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
+          this.isScroll = true
+        }, 2000);
+      })
+    },
+    methods: {
+      handleLyric(payload) {
+        const { bs, height, isScroll } = this
+        const lineNum = payload.lineNum
+        this.curNum = lineNum
+        if (bs && lineNum && isScroll){
+          bs.scrollToElement(
+            document.getElementsByClassName('active')[0],
+            500,
+            false,
+            -height
+          )
+        }
+      },
+      play() {
+        this.lyric.play()
+      },
+      stop() {
+        this.lyric.stop()
+      },
+      togglePlay() {
+        this.lyric.togglePlay()
+      },
+      seek () {
+        this.lyric.seek(parseInt(this.seekTime) * 1000)
+        this.curNum = this.lyric.curNum
+      }
+    }
+  })
+</script>
+</html>

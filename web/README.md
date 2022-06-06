@@ -54,3 +54,10 @@ css 大转盘
 - [devtools-detect](https://github.com/sindresorhus/devtools-detect)
 
 - [示例:打开开发者工具就debugger](./devtoolschange/index.html)
+
+## lyric-scroll
+> 手机端歌词实时滚动
+
+- 使用库 better-scroll lyric-parser
+
+- [示例](./lyric-scroll/index.html)
