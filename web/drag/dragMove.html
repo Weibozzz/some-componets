@@ -11,7 +11,7 @@
       border: 1px solid #ccc;
       top: 10%;
       left: 50%;
-      transform: translateX(-50%);
+      /*transform: translateX(-50%);*/
       z-index: 1;
     }
 
@@ -103,8 +103,8 @@
           event = event || window.event;
           const iL = event.clientX - disX;
           const iT = event.clientY - disY;
-          // const maxL = document.documentElement.clientWidth;
-          // const maxT = document.documentElement.clientHeight;
+          // const maxL = document.documentElement.clientWidth - box.clientWidth;
+          // const maxT = document.documentElement.clientHeight - box.clientHeight;
 
           // iL = iL < 0 ? 0 : iL;
           // iL = iL > maxL ? maxL : iL;
