@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>模拟彩票划线</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .table{
+      position: relative;
+      display: flex;
+      background: #00B700;
+      overflow-x: hidden;
+      canvas{
+        position: absolute;
+        top: 0;
+      }
+      .tr{
+        width: fit-content;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #eee;
+        .td{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 14px;
+          color: #fff;
+          border-right: 1px solid #eee;
+          width: 52px;
+          height: 28px;
+          .bet{
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            font-size: 14px;
+            color: #fff;
+            border-radius: 50%;
+            background: #617C3F;
+          }
+        }
+      }
+      .table-left{
+      }
+      .table-right{
+        position: relative;
+        flex: 1;
+        overflow-x: auto;
+        z-index: 3;
+        .tr{
+          .td{
+            width: 30px;
+            height: 28px;
+          }
+        }
+      }
+    }
+  </style>
+</head>
+<body>
+<h2>模拟彩票划线-请打开手机端模式</h2>
+<div id="app"></div>
+<script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<!-- 加载我们的 React 组件。-->
+<script type="text/babel">
+  const e = React.createElement
+  const { useRef, useEffect } = React
+  function Index(){
+    const canvasRef = useRef(null)
+    const canvasWidthBox = useRef(null)
+    const arr = [...Array(10)].map((v, i) => {
+      return {
+        t1: `022`,
+        t2: `1,5,6`,
+        t3: `小`,
+        t4: `双`,
+        t5: [3, 4, 3, 6, 7, 8, 9][i % 7],
+      }
+    })
+    const showBet = (num, bool, key) => {
+      if(!bool){
+        return (
+          <div key={key} className="td"></div>
+        )
+      }
+      return (
+        <div key={key} className="td">
+          <div className="bet">{num}</div>
+        </div>
+      )
+    }
+    const draw = () => {
+      const doms = document.querySelectorAll(`.td .bet`)
+      if(!canvasRef.current || !doms.length || !canvasWidthBox.current){
+        return
+      }
+      const canvas = canvasRef.current
+      canvas.width = (canvasWidthBox.current).offsetWidth
+      canvas.height = canvas.parentNode.offsetHeight
+      const ctx = canvas.getContext(`2d`)
+      if (window.devicePixelRatio) {
+        canvas.style.width = canvas.width + `px`
+        canvas.style.height = canvas.height + `px`
+        canvas.height = canvas.height * window.devicePixelRatio
+        canvas.width = canvas.width * window.devicePixelRatio
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
+      }
+
+      const r = 10 // 半径
+      ctx.imageSmoothingQuality = `high`
+      ctx.strokeStyle =`#fd4e5a`;
+      [...doms].forEach((item, i) => {
+        const { offsetLeft, offsetTop } = item
+        const x = offsetLeft + r - canvas.offsetLeft
+        const y = offsetTop + r - canvas.offsetTop
+        if(!i){
+          ctx.beginPath()
+          ctx.moveTo(x, y)
+        }
+        else   {
+          ctx.lineTo(x, y)
+        }
+        ctx.stroke()
+      })
+    }
+    useEffect(() => {
+      draw()
+    }, [])
+    return (
+      <div className="table">
+        <div className="table-left">
+          <div className="thead tr">
+            <div className="td">期号</div>
+            <div className="td">开奖</div>
+            <div className="td">大小</div>
+            <div className="td">单双</div>
+          </div>
+          {
+            arr.map((v, i) => {
+              return (
+                <div className="tr" key={i}>
+                  <div className="td">{v.t1}</div>
+                  <div className="td">{v.t2}</div>
+                  <div className="td">{v.t3}</div>
+                  <div className="td">{v.t4}</div>
+                </div>
+              )
+            })
+          }
+        </div>
+        <div className="table-right">
+          <canvas ref={canvasRef}></canvas>
+          <div ref={canvasWidthBox} className="thead tr">
+            <div className="td">3</div>
+            <div className="td">4</div>
+            <div className="td">5</div>
+            <div className="td">6</div>
+            <div className="td">7</div>
+            <div className="td">8</div>
+            <div className="td">9</div>
+          </div>
+          {
+            arr.map((v, i) => {
+              return (
+                <div className="tr" key={i}>
+                  {
+                    [...Array(7)].map((s, j) => {
+                      return showBet(v.t5, v.t5 - 3 === j, `${i}_${j}`)
+                    })
+                  }
+                </div>
+              )
+            })
+          }
+        </div>
+      </div>
+    );
+  }
+  class App extends React.Component {
+    constructor (props) {
+      super(props)
+    }
+    render () {
+      return <Index />
+    }
+  }
+  const domContainer = document.querySelector('#app')
+  ReactDOM.render(e(App), domContainer)
+</script>
+</body>
+</html>

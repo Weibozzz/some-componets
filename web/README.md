@@ -63,3 +63,10 @@ css 大转盘
 - [示例](./lyric-scroll/index.html)
   
   ![](./lyric-scroll/lyric-animation.gif)
+
+## lottery-line
+> 模拟彩票
+
+- [示例](./lottery-line/index.html)
+
+![](./lottery-line/lottery.png)
