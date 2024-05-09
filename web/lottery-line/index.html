@@ -28,7 +28,7 @@
           border-right: 1px solid #eee;
           width: 52px;
           height: 28px;
-          .bet{
+          .ball{
             position: relative;
             z-index: 2;
             display: flex;
@@ -69,37 +69,52 @@
 <!-- 加载我们的 React 组件。-->
 <script type="text/babel">
   const e = React.createElement
-  const { useRef, useEffect } = React
-  function Index(){
+  const Fragment = React.Fragment
+  const { useRef, useEffect, useState } = React
+  // export interface IDrawProps{
+  //   strokeStyle?: string // canvas 线颜色
+  //   initBallNum?: number // 初始位置第几列
+  //   headerLength: number // 总共几列
+  //   ballArr: number[] | string[] // 要划线的数组
+  //   normalBallArr?: number[][] | string[][] // 正常显示的二维数组
+  // }
+  function DrawBallLine(props){
+    const {
+      strokeStyle = `#CD4145`,
+      initBallNum = 0,
+      ballArr = [],
+      normalBallArr = [],
+      headerLength,
+    } = props
+    const [r, setR] = useState(0) // 半径偏移量
+    const itemsRef = useRef([])
+    useEffect(() => {
+      itemsRef.current = itemsRef.current.slice(0, ballArr.length)
+    }, [ballArr])
     const canvasRef = useRef(null)
     const canvasWidthBox = useRef(null)
-    const arr = [...Array(10)].map((v, i) => {
-      return {
-        t1: `022`,
-        t2: `1,5,6`,
-        t3: `小`,
-        t4: `双`,
-        t5: [3, 4, 3, 6, 7, 8, 9][i % 7],
-      }
-    })
-    const showBet = (num, bool, key) => {
+    const arr = ballArr
+    const showBet = (ballObj, bool, key) => {
+      const { ball, normalBall } = ballObj || {}
       if(!bool){
         return (
-          <div key={key} className="td"></div>
+          <div key={key} className="td">{normalBall}</div>
         )
       }
       return (
         <div key={key} className="td">
-          <div className="bet">{num}</div>
+          <div className="ball" ref={el => {
+            itemsRef.current[key.slice(0, 1)] = el
+          }}>{ball}</div>
         </div>
       )
     }
     const draw = () => {
-      const doms = document.querySelectorAll(`.td .bet`)
-      if(!canvasRef.current || !doms.length || !canvasWidthBox.current){
+      const canvas = canvasRef.current
+      const doms = itemsRef.current || []
+      if(!canvas || !canvasRef.current || !doms.length || !canvasWidthBox.current){
         return
       }
-      const canvas = canvasRef.current
       canvas.width = (canvasWidthBox.current).offsetWidth
       canvas.height = canvas.parentNode.offsetHeight
       const ctx = canvas.getContext(`2d`)
@@ -111,9 +126,8 @@
         ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
       }
 
-      const r = 10 // 半径
       ctx.imageSmoothingQuality = `high`
-      ctx.strokeStyle =`#fd4e5a`;
+      ctx.strokeStyle = strokeStyle;
       [...doms].forEach((item, i) => {
         const { offsetLeft, offsetTop } = item
         const x = offsetLeft + r - canvas.offsetLeft
@@ -130,7 +144,44 @@
     }
     useEffect(() => {
       draw()
-    }, [])
+      if(itemsRef.current && itemsRef.current.length){
+        setR((itemsRef.current[0].offsetWidth || 0) / 2)
+      }
+    }, [itemsRef, r])
+    return (
+      <Fragment>
+        <canvas ref={canvasRef}></canvas>
+        {
+          arr.map((v, i) => {
+            return (
+              <div ref={canvasWidthBox} className="tr" key={i}>
+                {
+                  [...Array(headerLength)].map((s, j) => {
+                    return showBet({
+                      ball: v,
+                      normalBall: normalBallArr[v] ? normalBallArr[v][j] : undefined,
+                    }, (v - initBallNum - 1) === j, `${i}_${j}`)
+                  })
+                }
+              </div>
+            )
+          })
+        }
+      </Fragment>
+    )
+  }
+  function Index(){
+    const arr = [...Array(10)].map((v, i) => {
+      return {
+        issue: `03150577`,
+        t1: `022`,
+        t2: `1,5,6`,
+        t3: `小`,
+        t4: `双`,
+        ball: [1, 3, 4, 6, 6, 7, 8, 9][i % 7],
+        normalBall: [...Array(10)].map((v, i) => (i)),
+      }
+    })
     return (
       <div className="table">
         <div className="table-left">
@@ -154,8 +205,7 @@
           }
         </div>
         <div className="table-right">
-          <canvas ref={canvasRef}></canvas>
-          <div ref={canvasWidthBox} className="thead tr">
+          <div className="thead tr">
             <div className="td">3</div>
             <div className="td">4</div>
             <div className="td">5</div>
@@ -164,19 +214,12 @@
             <div className="td">8</div>
             <div className="td">9</div>
           </div>
-          {
-            arr.map((v, i) => {
-              return (
-                <div className="tr" key={i}>
-                  {
-                    [...Array(7)].map((s, j) => {
-                      return showBet(v.t5, v.t5 - 3 === j, `${i}_${j}`)
-                    })
-                  }
-                </div>
-              )
-            })
-          }
+          <DrawBallLine
+            headerLength={10}
+            initBallNum={0}
+            ballArr={arr.map(v => v.ball)}
+            normalBallArr={arr.map(v => v.normalBall)}
+          />
         </div>
       </div>
     );
