@@ -101,10 +101,12 @@
           <div key={key} className="td">{normalBall}</div>
         )
       }
+      const refIndex = key.split(`_`)[0] - initBallNum
       return (
         <div key={key} className="td">
           <div className="ball" ref={el => {
-            itemsRef.current[key.slice(0, 1)] = el
+            if(!el)return;
+            itemsRef.current[+refIndex] = el
           }}>{ball}</div>
         </div>
       )
@@ -129,6 +131,7 @@
       ctx.imageSmoothingQuality = `high`
       ctx.strokeStyle = strokeStyle;
       [...doms].forEach((item, i) => {
+        if(!item)return ;
         const { offsetLeft, offsetTop } = item
         const x = offsetLeft + r - canvas.offsetLeft
         const y = offsetTop + r - canvas.offsetTop
@@ -145,7 +148,8 @@
     useEffect(() => {
       draw()
       if(itemsRef.current && itemsRef.current.length){
-        setR((itemsRef.current[0].offsetWidth || 0) / 2)
+        const dom = itemsRef.current.find(v => !!v)
+        setR((dom.offsetWidth || 0) / 2)
       }
     }, [itemsRef, r])
     return (
@@ -171,7 +175,7 @@
     )
   }
   function Index(){
-    const arr = [...Array(10)].map((v, i) => {
+    const arr = [...Array(100)].map((v, i) => {
       return {
         issue: `03150577`,
         t1: `022`,
