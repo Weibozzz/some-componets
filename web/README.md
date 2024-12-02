@@ -70,3 +70,9 @@ css 大转盘
 - [示例](./lottery-line/index.html)
 
 ![](./lottery-line/lottery.png)
+## trans-poker
+> 翻转组件 version1 纯js,version2 改造turnjs实现，version3 改造version1 实现react版本暂不支持预览
+
+- [示例](./trans-poker/version1/index.html)
+
+![](./trans-poker/trans-poker.png)

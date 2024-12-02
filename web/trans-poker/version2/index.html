@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Interactive Turn Page</title>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="turnAround.js"></script>
+
+<style>
+
+body{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+}
+.box{
+  transform: translateX(-100px);
+}
+</style>
+</head>
+<body>
+<div class="box">
+  <div id="container">
+    <div style="background:url(back.png) no-repeat">3331</div>
+    <div style="background:url(front.png) no-repeat">1</div>
+  </div>
+</div>
+</div>
+
+<script>
+$(document).ready(function() {
+  $("#container").turn({
+    width: 400,
+    height: 280,
+  });
+});
+</script>
+</body>
+</html>

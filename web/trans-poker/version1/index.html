@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>翻页效果展示</title>
+  <script src="./jquery.min.js"></script>
+  <style>
+    html,
+    body {
+      height: 100%;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .main-area {
+      position: relative;
+      margin: 20vw 10vw;
+      width: 20vw;
+      height: 28vw;
+    }
+
+    .card-wrap {
+      width: 20vw;
+      height: 28vw;
+      top: 0;
+      left: 0;
+    }
+
+    .positive-card {
+      position: absolute;
+      background-image: url(./back.png);
+      background-size: 100%;
+      z-index: 2;
+      /* clip-path: polygon(0% 70%, 0% 0%, 100% 0%, 100% 100%, 40% 100%); */
+    }
+
+    .obverse-card {
+      position: absolute;
+      background-image: url(./front.png);
+      background-size: 100%;
+      /* transform: rotate(-45deg); */
+      transform-origin: 100% 100%;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+<div class="main-area">
+  <div class="positive-card card-wrap">111</div>
+  <div class="obverse-card card-wrap">222</div>
+</div>
+</body>
+<script src="./index.js"></script>
+</html>
